@@ -13,6 +13,10 @@ const urls = db.define('urls', {
     epoch:{
         type: DataTypes.BIGINT,
         allowNull: false
+    },
+    clicks:{
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     }
 }, {
     tableName: 'urls',

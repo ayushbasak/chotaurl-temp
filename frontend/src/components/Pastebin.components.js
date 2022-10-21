@@ -59,18 +59,13 @@ const Pastebin = ()=>{
             link = 'http://localhost:5000/p/' + link
             await axios.get(link)
                 .then(response => {
-                    if(response.data.errorId === 2){
-                        setReadbinTitle('TITLE')
-                        setReadbinContent('No such paste')
-                    }
-                    else{
-                        const temp = response.data.content.split("<br>").join("\n")
-                        setReadbinTitle(response.data.title)
-                        setReadbinContent(temp)
-                    }
+                    const temp = response.data.content.split("<br>").join("\n")
+                    setReadbinTitle(response.data.title)
+                    setReadbinContent(temp)
                 })
                 .catch(err => {
-                    console.log(err)
+                    setReadbinTitle('TITLE')
+                    setReadbinContent('No such paste')
                 })
         }
     }
@@ -88,7 +83,6 @@ const Pastebin = ()=>{
         a.download = `chotaurl-pastebin-${readbinLink}.txt`;
         a.click();
         URL.revokeObjectURL(url);
-        // document.removeChild(a);
     }
 
     const decryptContent = () => {

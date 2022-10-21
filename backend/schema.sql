@@ -2,6 +2,7 @@ CREATE TABLE URLS(
     id VARCHAR(20),
     url VARCHAR(400) NOT NULL,
     epoch BIGINT NOT NULL,
+    clicks INT default 0,
     PRIMARY KEY(id)
 );
 

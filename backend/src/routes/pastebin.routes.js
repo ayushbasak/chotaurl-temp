@@ -19,7 +19,7 @@ router.route('/')
                         passcode === undefined ? '' : passcode)
         
         if(result == undefined)
-            res.json(ERROR_CREATION)
+            res.status(500).json(ERROR_CREATION)
         else{
             output = await crud.findThis(result.endpoint)
             output.passcode = passcode
@@ -32,7 +32,7 @@ router.route('/:id')
     .get(async (req, res)=>{
         const service = await crud.findThis(req.params.id)
         if(service == undefined)
-            res.json(ERROR_INVALID_URL)
+            res.status(500).json(ERROR_INVALID_URL)
         else{
             res.json(service)
         }

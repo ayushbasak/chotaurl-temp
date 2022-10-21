@@ -33,19 +33,22 @@ const App = ()=>{
     const save = {"url": curr}
     if(flavor !== "")
       save['flavor'] = flavor
-    const result = await axios.post('http://localhost:5000/q/', save)
-                            .catch(err => console.log(err))
-    if(result === undefined){
-      return
-    }
-    if(result.data.errorId === 2 || result.data.errorId === 1){
-      setFinal(result.data.error)
-      setValidity(0)
-    }
-    else{
-      setFinal(result.data.shortenedURL)
-      setValidity(result.data.epoch)
-    }
+    await axios.post('http://localhost:5000/q/', save)
+      .then(result => {
+        if(result === undefined){
+          return
+        }
+        setFinal(result.data.shortenedURL)
+        setValidity(result.data.epoch)
+      })
+      .catch(error => {
+        console.log(error.r);
+        if (error === undefined) return;
+        if(error.response.data.errorId === 2 || error.response.data.errorId === 1){
+          setFinal(error.response.data.error)
+          setValidity(0)
+        }
+      })
   }
   const copy = ()=>{
     navigator.clipboard.writeText(final)

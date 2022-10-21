@@ -10,7 +10,7 @@ const {
 
 const  validURL = (str) => {
     console.log(str);
-    var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    var pattern = new RegExp('^(https?:\\/\\/)'+ // protocol
     '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
     '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
     '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
@@ -21,7 +21,8 @@ const  validURL = (str) => {
 }  
 
 router.route('/')
-.post(async (req, res)=>{
+.post(async (req, res) => {
+    // create shortened URL depending on the request
     const currURL = req.protocol + '://' + req.get('host') + req.originalUrl
 
     const data = req.body
@@ -29,12 +30,8 @@ router.route('/')
     const url = data.url
     const flavor = data.flavor
 
-    if(url === undefined){
-        res.send(ERROR_INVALID_URL)
-        return
-    }
-    if(!validURL(url)){
-        res.send(ERROR_INVALID_URL)
+    if(url === undefined || !validURL(url)){
+        res.status(400).send(ERROR_INVALID_URL)
         return
     }
     let result = undefined
@@ -44,7 +41,7 @@ router.route('/')
         result = await crud.insertCheck(url, flavor)
     
     if(result == undefined)
-        res.json(ERROR_CREATION)
+        res.status(500).json(ERROR_CREATION)
     else{
         data.shortenedURL = currURL + result.endpoint
         data.epoch = result.epoch
@@ -55,10 +52,12 @@ router.route('/')
 
 router.route('/:id')
     .get(async (req, res)=>{
+        // console.log(req.params.id);
         const service = await crud.findThis(req.params.id)
         if(service == undefined)
-            res.json(ERROR_INVALID_URL)
+            res.status(500).json(ERROR_INVALID_URL)
         else{
+            // console.log(service);
             res.redirect(service)
         }
     })

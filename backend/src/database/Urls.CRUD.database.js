@@ -39,10 +39,19 @@ const insertCheck = async (url, flavor)=>{
 }
 
 const findThis= async (id)=>{
-    let data = await urls.findOne({
+    let result = undefined;
+    await urls.findOne({
         where: {id: id}
     })
-    return data ? data.dataValues.url : undefined
+        .then(
+            record => {
+                result = record.dataValues.url;
+                record.update({clicks: record.dataValues.clicks + 1})
+            }
+        )
+        .catch(err => console.log(err))
+    // console.log(result);
+    return result
 }
 
 const clearPrevious = async (days) =>{
@@ -79,7 +88,6 @@ const getHostNames = async ()=>{
     hostNames.map(curr =>
         result.add(curr.dataValues.url)
     )
-    console.log(result)
     return result
 }
 
